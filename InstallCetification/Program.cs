@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using System.Configuration;
 
 namespace InstallCetification
 {
@@ -49,7 +50,13 @@ namespace InstallCetification
             try
             {
                 //証明書をインストールするストア
-                var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                var installToLocalMachine = int.Parse(ConfigurationManager.AppSettings["installToLocalMachine"]);
+                X509Store store;
+                if (installToLocalMachine == 1)
+                    store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                else
+                    store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+
                 //インストールする証明書
                 var cerFile = new X509Certificate2(path);
                 //ストアを開く
